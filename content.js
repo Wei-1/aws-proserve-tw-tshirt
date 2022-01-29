@@ -7,10 +7,9 @@ function setAnnounce(content){
     content.appendChild(document.createElement('p'));
 }
 
-let survey = getTSurvey();
-let CURRENTPAGE = getPages(survey)[0];
+let CURRENTPAGE = 1;
 function setSubmit(content){
-    let config = {};
+    let survey = getTSurvey();
     let atmp = document.createElement('div');
     atmp.id = "survey";
     content.appendChild(atmp);
@@ -22,6 +21,7 @@ function setSubmit(content){
     let btn = document.createElement('button');
     btn.className = "w3-button w3-orange";
     btn.innerHTML = "Submit";
+    atmp.appendChild(btn);
     btn.onclick = function(e){
         if(validatePage(survey, report)){
             if(confirm('Ready for Submit?')) {
@@ -48,7 +48,6 @@ function setSubmit(content){
             emsg.innerHTML = "Mandatory Questions Unfinished";
         }
     }
-    atmp.appendChild(btn);
     let emsg = document.createElement('p');
     emsg.style.color = "red";
     emsg.innerHTML = "";
@@ -57,6 +56,72 @@ function setSubmit(content){
 }
 
 function setVote(content){
+    let survey = getInitVSurvey();
+    let report = getReport4Survey(survey);
+    let atmp = document.createElement('div');
+    atmp.id = "vote";
+    content.appendChild(atmp);
+    // Vote
+    let gallery = document.createElement('div');
+    gallery.id = "survey";
+    gallery.innerHTML = "Loading...";
+    atmp.appendChild(gallery);
+    let title = document.createElement('h1');
+    title.innerHTML = "";
+    gallery.appendChild(title);
+    let request = new XMLHttpRequest();
+    request.open('GET', 'https://u2yg6jn33c.execute-api.us-east-1.amazonaws.com/default/vote-provider', true);
+    request.onload = function(){
+        if(this.status >= 200 && this.status < 400){
+            let data = JSON.parse(this.response);
+            console.log(data);
+            for(let i = 0; i < data.length; i ++){
+                survey['data'][0]['data']['selection'].push(data[i]);
+            }
+            report = getReport4Survey(survey);
+            drawSurvey(survey, report);
+            showPage(survey, CURRENTPAGE);
+        }else{
+            console.log(this);
+        }
+    };
+    request.onerror = function(){
+        console.log(this);
+    };
+    request.send();
+    atmp.appendChild(document.createElement('hr'));
+    let btn = document.createElement('button');
+    btn.className = "w3-button w3-orange";
+    btn.innerHTML = "Submit";
+    atmp.appendChild(btn);
+    btn.onclick = function(e){
+        if(validatePage(survey, report)){
+            if(confirm('Ready to Vote?')) {
+                emsg.innerHTML = "Voting!";
+                let request = new XMLHttpRequest();
+                request.open('POST', 'https://d5jhh2scy8.execute-api.us-east-1.amazonaws.com/default/vote-capturer', true);
+                request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+                request.send(JSON.stringify(report));
+                request.onload = function(){
+                    if(this.status >= 200 && this.status < 400){
+                        emsg.innerHTML = "Vote Finished!";
+                        atmp.innerHTML = "You had completed the Vote!<br/>Thank you!"
+                    } else {
+                        emsg.innerHTML = "Vote Failed!";
+                    }
+                };
+            }else{
+                e.preventDefault();
+            }
+        }else{
+            emsg.innerHTML = "Mandatory Questions Unfinished";
+        }
+    }
+    let emsg = document.createElement('p');
+    emsg.style.color = "red";
+    emsg.innerHTML = "";
+    atmp.appendChild(emsg);
+    content.appendChild(document.createElement('p'));
 }
 
 function setResult(content){
@@ -150,7 +215,7 @@ function getTSurvey(){
         "time": (new Date()).getTime(),
         "text": "The design submission is included in the survey.",
         "data": questions
-    }
+    };
 }
 
 function reportFileHandler(report, cb){
@@ -164,4 +229,38 @@ function reportFileHandler(report, cb){
         cb();
     }
     reader.readAsDataURL(file);
+}
+
+function getInitVSurvey(){
+    return {
+        "name": "T-shirt Vote",
+        "id": "T-2",
+        "version": "0",
+        "time": (new Date()).getTime(),
+        "text": "1 person has 1 vote.<br/>Please validate all submission before you vote.",
+        "data": [{
+            "name": "Vote for the T-shirt Design",
+            "id": "T-2-Q-1",
+            "type": "multi",
+            "text": "There is an option to find a designer.",
+            "must": true,
+            "page": 1,
+            "data": {
+                "selection": [{
+                    "id": "0",
+                    "text": "All Designs are Bad. Suggest to Find a Professional Designer."
+                }]
+            }
+        }, {
+            "name": "Your AWS Login, please.",
+            "id": "T-2-Q-2",
+            "type": "open",
+            "text": "1 person will only be counted as 1 vote.",
+            "must": true,
+            "page": 1,
+            "data": {
+                "text": "Your ID without @amazon.com"
+            }
+        }]
+    };
 }
