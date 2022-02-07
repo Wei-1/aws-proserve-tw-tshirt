@@ -63,6 +63,7 @@ function drawQuesMulti(qelem, question, report){
         qelem.appendChild(tmp2);
         if(options[i]["image"]){
             let tmp = document.createElement("img");
+            tmp.style.width = "100%";
             tmp.src = options[i]["image"];
             tmp2.appendChild(tmp);
         }
@@ -120,6 +121,7 @@ function drawQuesCheckbox(qelem, question, report){
         qelem.appendChild(tmp2);
         if(options[i]["image"]){
             let tmp = document.createElement("img");
+            tmp.style.width = "100%";
             tmp.src = options[i]["image"];
             tmp2.appendChild(tmp);
         }

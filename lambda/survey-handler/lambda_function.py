@@ -43,8 +43,13 @@ def lambda_handler(event, context):
 
     res = [getS3Object(bucket_name, key) for key in file_list]
 
+    timemap = {}
     for r in res:
-        saveFile('lake-ingest-621149070359', 'tshirt/survey/' + r['data'][0]['data'] + '.json', json.dumps(r).encode("utf-8"))
+        user = r['data'][0]['data']
+        surveytime = r['time']
+        if user not in timemap or timemap[user] < surveytime:
+            timemap[user] = surveytime
+            saveFile('lake-ingest-621149070359', 'tshirt/survey/' + user + '.json', json.dumps(r).encode("utf-8"))
 
     return {
         'statusCode': 200,
