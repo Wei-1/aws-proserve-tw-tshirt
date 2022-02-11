@@ -1,0 +1,5 @@
+[{
+    "id": "1", "text": "This is the sample T-shirt. You can also vote for this.", "image": "asset/sample.png"
+}, {
+    "id": "2", "text": "This is the template T-shirt. You can also vote for this.", "image": "asset/template.png"
+}]
