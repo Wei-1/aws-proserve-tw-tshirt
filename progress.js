@@ -8,7 +8,7 @@ function getStages(){
         "id": "stage-1-1",
         "name": "Design Submission",
         "brief": "Submit",
-        "valid": true
+        "valid": false
     }, {
         "id": "stage-1-2",
         "name": "Vote",
