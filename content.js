@@ -247,7 +247,7 @@ function getInitVSurvey(){
             "page": 1,
             "data": {
                 "selection": [{
-                    "id": "0",
+                    "id": "-1",
                     "text": "All Designs are Bad. Suggest to Find a Professional Designer."
                 }]
             }
