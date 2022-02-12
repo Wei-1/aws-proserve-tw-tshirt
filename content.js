@@ -128,6 +128,7 @@ function setResult(content){
     let atmp = document.createElement('div');
     atmp.id = "result";
     content.appendChild(atmp);
+    result = {"-1": 0, "0": 0, "1": 0, "2": 0};
     // Vote
     let gallery = document.createElement('div');
     gallery.id = "survey";
@@ -139,7 +140,13 @@ function setResult(content){
         if(this.status >= 200 && this.status < 400){
             let data = JSON.parse(this.response);
             console.log(data);
-            gallery.innerHTML = data;
+            for(let k1 in result){
+                result[k1] = 0;
+            }
+            for(let k2 in data){
+                result[data[k2]] += 1;
+            }
+            gallery.innerHTML = JSON.stringify(result);
         }else{
             console.log(this);
         }
