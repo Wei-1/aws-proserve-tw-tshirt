@@ -125,6 +125,30 @@ function setVote(content){
 }
 
 function setResult(content){
+    let atmp = document.createElement('div');
+    atmp.id = "result";
+    content.appendChild(atmp);
+    // Vote
+    let gallery = document.createElement('div');
+    gallery.id = "survey";
+    gallery.innerHTML = "Loading...";
+    atmp.appendChild(gallery);
+    let request = new XMLHttpRequest();
+    request.open('GET', 'https://u2yg6jn33c.execute-api.us-east-1.amazonaws.com/default/result-provider', true);
+    request.onload = function(){
+        if(this.status >= 200 && this.status < 400){
+            let data = JSON.parse(this.response);
+            console.log(data);
+            gallery.innerHTML = data;
+        }else{
+            console.log(this);
+        }
+    };
+    request.onerror = function(){
+        console.log(this);
+    };
+    request.send();
+    content.appendChild(document.createElement('p'));
 }
 
 // ------------------------------------- //
