@@ -13,12 +13,12 @@ function getStages(){
         "id": "stage-1-2",
         "name": "Vote",
         "brief": "Vote",
-        "valid": true
+        "valid": false
     }, {
         "id": "stage-1-3",
         "name": "Result Reveal",
         "brief": "Result",
-        "valid": false
+        "valid": true
     }];
 }
 
